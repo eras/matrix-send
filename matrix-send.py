@@ -37,7 +37,7 @@ def send_message(endpoint: str, access_token: str, channel_id: str, message: str
 
 def main(argv: List[str]):
     parser = argparse.ArgumentParser(description="Matrix Sender")
-    parser.add_argument("message", type=str, help='Send this message')
+    parser.add_argument("message", type=str, nargs='?', default=None, help='Send this message')
     parser.add_argument("--config", type=str, help='Read given configuration file')
     args = parser.parse_args(argv[1:])
     if not args.config:
@@ -54,11 +54,16 @@ def main(argv: List[str]):
     endpoint = default['endpoint'] # type: str
     access_token = default['access_token'] # type: str
     channel_id = default['channel_id'] # type: str
-    
+
+    if args.message is None:
+        message = sys.stdin.read()
+    else:
+        message = args.message
+
     if send_message(endpoint=endpoint,
                     access_token=access_token,
                     channel_id=channel_id,
-                    message=args.message):
+                    message=message):
         return 0
     else:
         return 1
