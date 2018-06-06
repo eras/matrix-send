@@ -1,8 +1,5 @@
 #!/usr/bin/python3
 
-import http.client
-http.client.HTTPConnection.debuglevel = 1
-
 import sys
 import json
 import urllib.parse
