@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
 import sys
+import io
 import json
 import urllib.parse
 import urllib.request
@@ -54,7 +55,8 @@ def main(argv: List[str]):
     timeout = int(default.get('timeout', "10"))
 
     if args.message is None:
-        message = sys.stdin.read()
+        stdinutf8 = io.open(sys.stdin.fileno(), 'r', encoding='utf8')
+        message = stdinutf8.read()
     else:
         message = args.message
 
