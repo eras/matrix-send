@@ -15,7 +15,7 @@ import os
 def url_quote(input: str) -> str:
     return urllib.parse.quote_plus(input)
 
-def send_message(endpoint: str, access_token: str, channel_id: str, message: str, timeout: int) -> bool:
+def send_message(endpoint: str, access_token: str, channel_id: str, msgtype: str, message: str, timeout: int) -> bool:
     message_id = datetime.now().strftime("m%s.%f")
     ssl_context = ssl.SSLContext(protocol=ssl.PROTOCOL_TLSv1_2)
     url = "{endpoint}client/r0/rooms/{channel_id}/send/m.room.message/{message_id}?access_token={access_token}".format(
@@ -24,7 +24,7 @@ def send_message(endpoint: str, access_token: str, channel_id: str, message: str
         message_id=url_quote(message_id),
         access_token=url_quote(access_token)
     )
-    body = json.dumps({"msgtype": "m.notice",
+    body = json.dumps({"msgtype": msgtype,
                        "format": "org.matrix.custom.html",
                        "body": message,
                        "formatted_body": message}).encode()
@@ -52,6 +52,7 @@ def main(argv: List[str]):
     endpoint = default['endpoint'] # type: str
     access_token = default['access_token'] # type: str
     channel_id = default['channel_id'] # type: str
+    msgtype = default.get('msgtype', 'm.notice') # type: str
     timeout = int(default.get('timeout', "10"))
 
     if args.message is None:
@@ -63,6 +64,7 @@ def main(argv: List[str]):
     if send_message(endpoint=endpoint,
                     access_token=access_token,
                     channel_id=channel_id,
+                    msgtype=msgtype,
                     message=message,
                     timeout=timeout):
         return 0
